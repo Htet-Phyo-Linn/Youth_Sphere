@@ -17,9 +17,11 @@ class AdminAuthCheckMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $userRole = Auth::user()->role;
-        if($userRole == 'instructor' || $userRole == 'student'){
-            abort(404);
-            // return back();
+        if($userRole == 'admin'){
+            return redirect()->route('admin.dashboard');
+        }
+        elseif($userRole == 'user' || $userRole == 'manager'){
+            return redirect()->route('home');
         }
         return $next($request);
     }

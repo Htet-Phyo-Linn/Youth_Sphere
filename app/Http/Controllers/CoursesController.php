@@ -6,9 +6,51 @@ use Illuminate\Http\Request;
 use App\Models\Courses;
 use App\Models\User;
 use App\Models\Categories;
+use Illuminate\Support\Facades\DB;
 
 class CoursesController extends Controller
 {
+
+    function index() {
+        // Retrieve courses with category name using a join
+        $courses = DB::table('courses')
+            ->leftJoin('categories', 'courses.category_id', '=', 'categories.id')
+            ->select('courses.*', 'categories.name as category_name')
+            ->paginate(8);
+
+        // Fetch categories for the filter buttons
+        $categories = DB::table('categories')->get();
+
+        // Return view with courses and categories
+        return view('user.layouts.courses', compact('courses', 'categories'));
+    }
+
+
+    public function filter(Request $request) {
+        // If category_id is null (i.e., "All" button clicked), fetch all courses
+        if ($request->category_id === null) {
+            $courses = DB::table('courses')
+                ->leftJoin('categories', 'courses.category_id', '=', 'categories.id')
+                ->select('courses.*', 'categories.name as category_name')
+                ->paginate(8);
+        } else {
+            // Otherwise, filter by the selected category_id
+            $courses = DB::table('courses')
+                ->leftJoin('categories', 'courses.category_id', '=', 'categories.id')
+                ->select('courses.*', 'categories.name as category_name')
+                ->where('courses.category_id', $request->category_id)
+                ->paginate(8); // Paginate the results
+        }
+
+        // Fetch all categories for the filter buttons
+        $categories = DB::table('categories')->get();
+
+        // Return the filtered courses (partial view) and categories
+        return view('user.layouts.partials.coursesCard', compact('courses', 'categories'));
+    }
+
+
+
     // view courses list
     public function list() {
         $items = Courses::select('courses.*',
@@ -113,7 +155,7 @@ class CoursesController extends Controller
         // Check if a new image is uploaded and store it
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('images/courses', 'public');
-            $data['image'] = $imagePath;
+            $course->update(['image' => $imagePath]);
         }
 
         // Update the course with new data

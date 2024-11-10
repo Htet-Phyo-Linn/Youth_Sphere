@@ -62,6 +62,7 @@
                         <table id="example" class="table table-striped table-border display">
                             <thead>
                                 <tr>
+                                    <th>No</th>
                                     <th>Course ID</th>
                                     <th>Instructor Name</th>
                                     <th>Category Name</th>
@@ -74,6 +75,7 @@
                             <tbody>
                                 @foreach ($items as $index => $course)
                                     <tr>
+                                        <td>{{ $index + 1 }}</td>
                                         <td>{{ $course->id }}
                                             <img src="{{ asset('storage/' . $course->image) }}" alt="Course Image"
                                                 style="float: right;">

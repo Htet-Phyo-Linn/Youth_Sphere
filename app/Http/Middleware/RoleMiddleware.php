@@ -31,17 +31,17 @@ class RoleMiddleware
             }
 
             // Manager-specific routes protection
-            if ($request->is('manager*') && $userRole !== 'manager') {
+            elseif ($request->is('manager*') && $userRole !== 'manager') {
                 return abort(403, 'Unauthorized');
             }
 
             // Instructor-specific routes protection
-            if ($request->is('instructor*') && $userRole !== 'instructor') {
+            elseif ($request->is('instructor*') && $userRole !== 'instructor') {
                 return abort(403, 'Unauthorized');
             }
 
             // Student-specific routes protection
-            if ($request->is('student*') && $userRole !== 'student') {
+            elseif ($request->is('student*') && $userRole !== 'student') {
                 return abort(403, 'Unauthorized');
             }
         }

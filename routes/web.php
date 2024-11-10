@@ -12,19 +12,20 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\LessonsController;
 use App\Http\Controllers\EnrollmentsController;
 use App\Http\Middleware\CacheJsMiddleware;
+use App\Http\Controllers\AuthenticatedUserController;
+use App\Http\Middleware\RestrictPublicAccess;
 
-// Route::get('/js/{file}', function ($file) {
-//     return response()->file(storage_path('js/' . $file));
-// })->middleware(CacheJsMiddleware::class);
+// public routes
+Route::view('/', 'welcome')->name('/');
+Route::view('/contact', 'user.layouts.contact')->name('contact');
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/courses', [CoursesController::class, 'index'])->name('public.courses');
+Route::get('/filter', [CoursesController::class, 'filter'])->name('courses.filter');
 
-// Dashboard with Breeze's auth middleware
+
+// no dashboard, using route to split admin and user
 Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', AdminAuthCheckMiddleware::class])->name('dashboard');
 
 Route::get('loginPage', [AuthController::class, 'loginPage'])->name('auth#loginPage');
 Route::get('registerPage', [AuthController::class, 'registerPage'])->name('auth#registerPage');
@@ -33,15 +34,12 @@ Route::get('registerPage', [AuthController::class, 'registerPage'])->name('auth#
 // Routes that require authentication and role checking
 Route::middleware(['auth', 'verified', RoleMiddleware::class])->group(function () {
 
+    Route::get('home', [AuthenticatedUserController::class, 'index'])->name('home');
 
-    // Route::prefix('admin')->group(function () {
-    //     // Route::prefix('course')->group(function () {
-    //     // });
-    //     Route::get('list', [TestController::class, 'list'])->name('course.list');
-
-    // });
-
-    Route::prefix('manager')->group(function () {
+    Route::prefix('admin')->group(function () {
+        Route::get('dashboard', function () {
+            return view('dashboard');
+        })->name('admin.dashboard');
 
         Route::prefix('user')->group(function () {
             Route::get('list', [UserController::class, 'list'])->name('user.list');
@@ -93,19 +91,12 @@ Route::middleware(['auth', 'verified', RoleMiddleware::class])->group(function (
 
             Route::get('delete/{id}', [EnrollmentsController::class, 'delete'])->name('enrollment.delete');
         });
-
-
-    });
-
-    Route::prefix('student')->group(function () {
-        Route::get('/', function () {
-            return view('userhome');
-        })->name('student.home');
     });
 
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    // Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -141,6 +132,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 //     });
 // });
 
+
+Route::fallback(function () {
+    return redirect()->route('dashboard'); // Redirect to dashboard for undefined routes
+});
 // Authentication routes provided by Laravel Breeze
 require __DIR__ . '/auth.php';
 

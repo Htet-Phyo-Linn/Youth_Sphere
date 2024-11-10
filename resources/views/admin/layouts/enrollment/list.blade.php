@@ -66,7 +66,8 @@
                         <table id="example" class="table table-striped table-border display">
                             <thead>
                                 <tr>
-                                    {{-- <th>Enrollement ID</th> --}}
+                                    <th>No</th>
+                                    <th>Enrollement ID</th>
                                     <th>Username</th>
                                     <th>Email</th>
                                     <th>enrollment Name</th>
@@ -80,8 +81,8 @@
                                     <tr>
                                         {{-- <td>{{ sprintf('ENR-%05d', $enrollment->id) }}</td> --}}
                                         <!-- This will show 1 for the first item, 2 for the second, and so on -->
-
-                                        {{-- <td>{{ $enrollment->enrollment_id }}</td> --}}
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ $enrollment->enrollment_id }}</td>
                                         <td>{{ $enrollment->username }}</td>
                                         <td>{{ $enrollment->user_email }}</td>
                                         <td>{{ $enrollment->course_name }}</td>
@@ -191,6 +192,7 @@
             <div class="modal-body">
                 <form id="enrollmentForm" action="{{ route('enrollment.edit') }}" method="POST">
                     @csrf
+
                     <input type="hidden" name="enrollment_id" id="enrollment_id"
                         value="{{ $enrollment->enrollment_id }}">
 

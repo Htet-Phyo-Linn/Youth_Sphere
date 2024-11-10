@@ -52,6 +52,7 @@
                         <table id="example" class="table table-striped table-border">
                             <thead>
                                 <tr>
+                                    <th>No</th>
                                     <th>Category ID</th>
                                     {{-- <th>Category ID</th> --}}
                                     <th>Title</th>
@@ -62,6 +63,7 @@
                             <tbody>
                                 @foreach ($items as $index => $category)
                                     <tr>
+                                        <td>{{ $index + 1 }}</td>
                                         <td>{{ $category->id }}</td>
                                         <td>{{ $category->name }}</td>
                                         <td>{{ $category->description }}</td>

@@ -50,8 +50,8 @@
                         <table id="example" class="table table-striped table-border">
                             <thead>
                                 <tr>
-                                    <th>User ID</th>
-                                    {{-- <th>user ID</th> --}}
+                                    <th>No</th>
+                                    <th>user ID</th>
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Phone</th>
@@ -64,7 +64,10 @@
                                 @foreach ($items as $index => $user)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
-                                        {{-- <td>{{ $user->user_id }}</td> --}}
+                                        <td>{{ $user->id }}
+                                            <img src="{{ asset('storage/' . $user->profile_photo_path) }}" alt="Profile"
+                                                style="float: right;">
+                                        </td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td>{{ $user->phone }}</td>

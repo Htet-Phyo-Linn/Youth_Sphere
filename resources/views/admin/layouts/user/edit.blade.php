@@ -36,8 +36,8 @@
                                 </option>
                                 <option value="instructor" {{ old('role', $data->role) == 'instructor' ? 'selected' : '' }}>
                                     Instructor</option>
-                                <option value="manager" {{ old('role', $data->role) == 'manager' ? 'selected' : '' }}>
-                                    Manager</option>
+                                <option value="admin" {{ old('role', $data->role) == 'admin' ? 'selected' : '' }}>
+                                    Admin</option>
                             </select>
                         </div>
                         <div class="form-group">
